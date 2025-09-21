@@ -56,6 +56,17 @@ enum OutputFormat {
     Tsv,
 }
 
+impl std::fmt::Display for OutputFormat {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            OutputFormat::Csv => write!(f, "csv"),
+            OutputFormat::Json => write!(f, "json"),
+            OutputFormat::Xml => write!(f, "xml"),
+            OutputFormat::Tsv => write!(f, "tsv"),
+        }
+    }
+}
+
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     let cli = Cli::parse();
@@ -67,44 +78,86 @@ async fn main() -> anyhow::Result<()> {
 }
 
 async fn generate_data(args: GenerateArgs) -> anyhow::Result<()> {
-    println!(
-        "Generating {} items from pattern: {}",
-        args.count, args.pattern
-    );
-
-    let mut generator = if let Some(seed) = args.seed {
-        DataGenerator::with_seed(&args.pattern, seed)?
-    } else {
-        DataGenerator::new(&args.pattern)?
-    };
-
-    let data = generator.generate(args.count)?;
-
-    let output_path = args.output.to_string_lossy();
-
-    match args.format {
-        OutputFormat::Csv => {
-            let exporter = CsvExporter::new();
-            exporter.export(&data, &output_path)?;
-        }
-        OutputFormat::Json => {
-            let exporter = JsonExporter::new();
-            exporter.export(&data, &output_path)?;
-        }
-        OutputFormat::Xml => {
-            let exporter = XmlExporter::new();
-            exporter.export(&data, &output_path)?;
-        }
-        OutputFormat::Tsv => {
-            let exporter = TsvExporter::new();
-            exporter.export(&data, &output_path)?;
+    // Validate output directory exists
+    if let Some(parent) = args.output.parent() {
+        if !parent.exists() {
+            eprintln!("Error: Output directory '{}' does not exist", parent.display());
+            std::process::exit(1);
         }
     }
 
     println!(
-        "Successfully generated {} items to {}",
-        args.count, output_path
+        "🔄 Generating {} items from pattern: '{}'",
+        args.count, args.pattern
     );
+
+    let mut generator = if let Some(seed) = args.seed {
+        match DataGenerator::with_seed(&args.pattern, seed) {
+            Ok(generator) => {
+                println!("ℹ️  Using seed: {} for reproducible generation", seed);
+                generator
+            }
+            Err(e) => {
+                eprintln!("❌ Failed to create generator: {}", e);
+                std::process::exit(1);
+            }
+        }
+    } else {
+        match DataGenerator::new(&args.pattern) {
+            Ok(generator) => generator,
+            Err(e) => {
+                eprintln!("❌ Failed to create generator: {}", e);
+                std::process::exit(1);
+            }
+        }
+    };
+
+    let data = match generator.generate(args.count) {
+        Ok(data) => {
+            println!("✅ Successfully generated {} items", data.len());
+            data
+        }
+        Err(e) => {
+            eprintln!("❌ Data generation failed: {}", e);
+            std::process::exit(1);
+        }
+    };
+
+    let output_path = args.output.to_string_lossy();
+    println!("💾 Exporting to {} format...", args.format.to_string().to_uppercase());
+
+    let export_result = match args.format {
+        OutputFormat::Csv => {
+            let exporter = CsvExporter::new();
+            exporter.export(&data, &output_path)
+        }
+        OutputFormat::Json => {
+            let exporter = JsonExporter::new();
+            exporter.export(&data, &output_path)
+        }
+        OutputFormat::Xml => {
+            let exporter = XmlExporter::new();
+            exporter.export(&data, &output_path)
+        }
+        OutputFormat::Tsv => {
+            let exporter = TsvExporter::new();
+            exporter.export(&data, &output_path)
+        }
+    };
+
+    match export_result {
+        Ok(()) => {
+            println!(
+                "🎉 Successfully exported {} items to '{}'",
+                args.count, output_path
+            );
+        }
+        Err(e) => {
+            eprintln!("❌ Export failed: {}", e);
+            std::process::exit(1);
+        }
+    }
+
     Ok(())
 }
 
