@@ -1,9 +1,10 @@
 [package]
 name = "regex-data-gen-core"
-version = "0.1.0"
-edition = "2024"
+version.workspace = true
+edition.workspace = true
 description = "Core library for generating random data from regex patterns"
-license = "MIT"
+license.workspace = true
+authors.workspace = true
 
 [dependencies]
 regex = { workspace = true }

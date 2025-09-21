@@ -5,6 +5,12 @@ members = [
     "cli",
 ]
 
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+authors = ["MINWOO KIM <oxygen3112@daum.net>"]
+
 [workspace.dependencies]
 regex = "1.11"
 serde = { version = "1.0", features = ["derive"] }

@@ -1,9 +1,10 @@
 [package]
 name = "regex-data-gen-cli"
-version = "0.1.0"
-edition = "2024"
+version.workspace = true
+edition.workspace = true
 description = "Command-line interface for regex data generation"
-license = "MIT"
+license.workspace = true
+authors.workspace = true
 
 [[bin]]
 name = "regex-data-gen"
