@@ -1,9 +1,8 @@
 use super::Exporter;
 use crate::{Error, Result};
-use quick_xml::events::{Event, BytesEnd, BytesStart, BytesText};
 use quick_xml::Writer;
+use quick_xml::events::{BytesEnd, BytesStart, BytesText, Event};
 use std::fs::File;
-use std::io::Cursor;
 
 pub struct XmlExporter {
     root_element: String,
@@ -41,7 +40,11 @@ impl Exporter for XmlExporter {
 
         // Write XML declaration
         writer
-            .write_event(Event::Decl(quick_xml::events::BytesDecl::new("1.0", Some("UTF-8"), None)))
+            .write_event(Event::Decl(quick_xml::events::BytesDecl::new(
+                "1.0",
+                Some("UTF-8"),
+                None,
+            )))
             .map_err(|e| Error::ExportFailed(format!("Failed to write XML declaration: {}", e)))?;
 
         // Write root element start

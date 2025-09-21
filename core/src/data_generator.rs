@@ -1,6 +1,6 @@
-use crate::{Error, Result, RegexEngine};
-use rand::{Rng, SeedableRng};
+use crate::{RegexEngine, Result};
 use rand::rngs::StdRng;
+use rand::{Rng, SeedableRng};
 
 pub struct DataGenerator {
     regex_engine: RegexEngine,
@@ -12,20 +12,14 @@ impl DataGenerator {
         let regex_engine = RegexEngine::new(pattern)?;
         let rng = StdRng::from_entropy();
 
-        Ok(Self {
-            regex_engine,
-            rng,
-        })
+        Ok(Self { regex_engine, rng })
     }
 
     pub fn with_seed(pattern: &str, seed: u64) -> Result<Self> {
         let regex_engine = RegexEngine::new(pattern)?;
         let rng = StdRng::seed_from_u64(seed);
 
-        Ok(Self {
-            regex_engine,
-            rng,
-        })
+        Ok(Self { regex_engine, rng })
     }
 
     pub fn generate(&mut self, count: usize) -> Result<Vec<String>> {

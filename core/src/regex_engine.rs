@@ -1,5 +1,5 @@
-use regex::Regex;
 use crate::{Error, Result};
+use regex::Regex;
 
 pub struct RegexEngine {
     pattern: String,
@@ -8,8 +8,7 @@ pub struct RegexEngine {
 
 impl RegexEngine {
     pub fn new(pattern: &str) -> Result<Self> {
-        let compiled = Regex::new(pattern)
-            .map_err(|e| Error::InvalidRegex(e.to_string()))?;
+        let compiled = Regex::new(pattern).map_err(|e| Error::InvalidRegex(e.to_string()))?;
 
         Ok(Self {
             pattern: pattern.to_string(),
@@ -26,8 +25,7 @@ impl RegexEngine {
     }
 
     pub fn validate_pattern(pattern: &str) -> Result<()> {
-        Regex::new(pattern)
-            .map_err(|e| Error::InvalidRegex(e.to_string()))?;
+        Regex::new(pattern).map_err(|e| Error::InvalidRegex(e.to_string()))?;
         Ok(())
     }
 }

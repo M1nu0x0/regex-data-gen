@@ -33,16 +33,19 @@ impl Exporter for CsvExporter {
         let mut writer = Writer::from_writer(file);
 
         // Write headers
-        writer.write_record(&self.headers)
+        writer
+            .write_record(&self.headers)
             .map_err(|e| Error::ExportFailed(format!("Failed to write CSV headers: {}", e)))?;
 
         // Write data rows
         for item in data {
-            writer.write_record(&[item])
+            writer
+                .write_record([item])
                 .map_err(|e| Error::ExportFailed(format!("Failed to write CSV record: {}", e)))?;
         }
 
-        writer.flush()
+        writer
+            .flush()
             .map_err(|e| Error::ExportFailed(format!("Failed to flush CSV writer: {}", e)))?;
 
         Ok(())

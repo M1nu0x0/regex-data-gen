@@ -1,10 +1,10 @@
-pub mod regex_engine;
 pub mod data_generator;
 pub mod exporters;
+pub mod regex_engine;
 
-pub use regex_engine::RegexEngine;
 pub use data_generator::DataGenerator;
 pub use exporters::*;
+pub use regex_engine::RegexEngine;
 
 #[derive(Debug, thiserror::Error)]
 pub enum Error {

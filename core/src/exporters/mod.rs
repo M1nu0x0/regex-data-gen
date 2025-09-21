@@ -1,7 +1,7 @@
 pub mod csv;
 pub mod json;
-pub mod xml;
 pub mod tsv;
+pub mod xml;
 
 use crate::Result;
 
@@ -12,5 +12,5 @@ pub trait Exporter {
 
 pub use csv::CsvExporter;
 pub use json::JsonExporter;
-pub use xml::XmlExporter;
 pub use tsv::TsvExporter;
+pub use xml::XmlExporter;

@@ -1,5 +1,7 @@
 use clap::{Args, Parser, Subcommand, ValueEnum};
-use regex_data_gen_core::{DataGenerator, CsvExporter, JsonExporter, TsvExporter, XmlExporter, Exporter};
+use regex_data_gen_core::{
+    CsvExporter, DataGenerator, Exporter, JsonExporter, TsvExporter, XmlExporter,
+};
 use std::path::PathBuf;
 
 #[derive(Parser)]
@@ -65,7 +67,10 @@ async fn main() -> anyhow::Result<()> {
 }
 
 async fn generate_data(args: GenerateArgs) -> anyhow::Result<()> {
-    println!("Generating {} items from pattern: {}", args.count, args.pattern);
+    println!(
+        "Generating {} items from pattern: {}",
+        args.count, args.pattern
+    );
 
     let mut generator = if let Some(seed) = args.seed {
         DataGenerator::with_seed(&args.pattern, seed)?
@@ -96,7 +101,10 @@ async fn generate_data(args: GenerateArgs) -> anyhow::Result<()> {
         }
     }
 
-    println!("Successfully generated {} items to {}", args.count, output_path);
+    println!(
+        "Successfully generated {} items to {}",
+        args.count, output_path
+    );
     Ok(())
 }
 
