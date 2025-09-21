@@ -13,7 +13,8 @@ csv = { workspace = true }
 quick-xml = { workspace = true }
 anyhow = { workspace = true }
 thiserror = { workspace = true }
-rand = "0.8"
+rand = { workspace = true }
+rand_regex = { workspace = true }
 
 [lib]
 name = "regex_data_gen_core"
