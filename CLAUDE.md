@@ -21,10 +21,8 @@ This project is a comprehensive tool for generating random dummy data based on r
 - **Performance Optimization**: Handle large datasets efficiently
 
 #### Frontend Interfaces
-1. **Web Interface (Svelte + Flowbite)**
+1. **Web Interface (Svelte)**
     - Static website deployment using SvelteKit
-    - Flowbite Svelte Admin Dashboard template as base
-    - Tailwind CSS + Flowbite components for modern UI
     - User-friendly GUI for pattern input with form validation
     - Real-time preview and data validation
     - Responsive design for desktop and mobile
@@ -123,14 +121,12 @@ clap = "4.0"  # For CLI
 tokio = "1.0"  # For async operations
 ```
 
-### Web Interface Dependencies (Svelte + Flowbite)
+### Web Interface Dependencies (Svelte)
 ```json
 {
   "dependencies": {
     "svelte": "^4.0.0",
     "@sveltejs/kit": "^1.0.0",
-    "flowbite-svelte": "^0.44.0",
-    "flowbite": "^2.0.0",
     "tailwindcss": "^3.0.0",
     "@tailwindcss/forms": "^0.5.0",
     "@tailwindcss/typography": "^0.5.0"
@@ -183,14 +179,7 @@ regex-dummy-generator/
 
 ## UI/UX Design Framework
 
-### Flowbite Svelte Integration
-The web interface will be built using **Flowbite Svelte Admin Dashboard** template, providing:
-
-#### Design System
-- **Modern Tailwind CSS**: Utility-first CSS framework for rapid development
-- **Flowbite Components**: 60+ pre-built, accessible UI components
-- **Consistent Theming**: Built-in dark/light mode support
-- **Responsive Design**: Mobile-first approach with tablet and desktop optimization
+### Svelte Components
 
 #### Key UI Components for Data Generation Tool
 - **Form Elements**: Advanced input fields, validation states, and form layouts
