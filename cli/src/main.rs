@@ -1,6 +1,6 @@
 use clap::{Args, Parser, Subcommand, ValueEnum};
 use regex_data_gen_core::{
-    CsvExporter, DataGenerator, Exporter, JsonExporter, TsvExporter, XmlExporter,
+    CsvExporter, DataGenerator, Exporter, GenerationMode, JsonExporter, TsvExporter, XmlExporter,
 };
 use std::path::PathBuf;
 
@@ -40,6 +40,10 @@ struct GenerateArgs {
     /// Random seed for reproducible generation
     #[arg(short, long)]
     seed: Option<u64>,
+
+    /// Generation mode
+    #[arg(short, long, default_value = "random")]
+    mode: GenerationModeArg,
 }
 
 #[derive(Args)]
@@ -67,6 +71,23 @@ impl std::fmt::Display for OutputFormat {
     }
 }
 
+#[derive(Clone, ValueEnum)]
+enum GenerationModeArg {
+    Random,
+    Sequential,
+    Reverse,
+}
+
+impl From<GenerationModeArg> for GenerationMode {
+    fn from(mode: GenerationModeArg) -> Self {
+        match mode {
+            GenerationModeArg::Random => GenerationMode::Random,
+            GenerationModeArg::Sequential => GenerationMode::Sequential,
+            GenerationModeArg::Reverse => GenerationMode::ReverseSequential,
+        }
+    }
+}
+
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     let cli = Cli::parse();
@@ -79,12 +100,11 @@ async fn main() -> anyhow::Result<()> {
 
 async fn generate_data(args: GenerateArgs) -> anyhow::Result<()> {
     // Validate output directory exists
-    if let Some(parent) = args.output.parent() {
-        if !parent.exists() {
+    if let Some(parent) = args.output.parent()
+        && !parent.exists() {
             eprintln!("Error: Output directory '{}' does not exist", parent.display());
             std::process::exit(1);
         }
-    }
 
     println!(
         "🔄 Generating {} items from pattern: '{}'",
@@ -112,7 +132,9 @@ async fn generate_data(args: GenerateArgs) -> anyhow::Result<()> {
         }
     };
 
-    let data = match generator.generate(args.count) {
+    let generation_mode: GenerationMode = args.mode.into();
+
+    let data = match generator.generate_with_mode(args.count, generation_mode) {
         Ok(data) => {
             println!("✅ Successfully generated {} items", data.len());
             data
